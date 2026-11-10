@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phenotypesworld - Biometric Facial AI & 202 Catalog Analyzer</title>
+    <!-- Chargement de face-api.js pentru detecție biometrică reală -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--accent-color);
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .upload-section {
+            background: var(--card-bg);
+            border: 2px dashed var(--accent-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        #previewContainer {
+            position: relative;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        #previewImage {
+            max-width: 260px;
+            max-height: 260px;
+            border-radius: 8px;
+            display: none;
+            border: 2px solid var(--border-color);
+        }
+
+        #canvasOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 8px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .recipe-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .recipe-title {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recipe-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .recipe-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        .progress-bar-bg {
+            background: #334155;
+            height: 10px;
+            border-radius: 5px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar-fill {
+            background: var(--accent-color);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .phenotype-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .phenotype-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-badge {
+            background: #334155;
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .similarity-score {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .chain-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            width: 95px;
+        }
+
+        .node img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-
