@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phenotypesworld - Biometric Facial AI & 202 Catalog Analyzer</title>
-    <!-- Chargement de face-api.js pentru detecție biometrică reală -->
+    <title>Phenotypesworld - Biometric Facial Analyzer & 202 Catalog</title>
+    <!-- Load face-api.js from CDN for real biometric detection -->
     <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     <style>
         :root {
@@ -12,7 +12,7 @@
             --card-bg: #1e293b;
             --accent-color: #10b981;
             --accent-glow: rgba(16, 185, 129, 0.2);
-            --text-main: #f8fafc;
+            --text-main: #f3f4f6;
             --text-muted: #94a3b8;
             --border-color: #334155;
         }
@@ -73,159 +73,78 @@
         }
 
         .upload-btn {
-            background: var(--accent-color);
-            color: #000;
-            font-weight: bold;
+            background-color: var(--accent-color);
+            color: #0f172a;
             padding: 10px 20px;
             border-radius: 6px;
-            border: none;
-            cursor: pointer;
+            font-weight: bold;
+            display: inline-block;
             margin-top: 10px;
-            display: inline-block;
         }
 
-        #previewContainer {
-            position: relative;
-            display: inline-block;
-            margin-top: 15px;
-        }
-
-        #previewImage {
-            max-width: 260px;
-            max-height: 260px;
-            border-radius: 8px;
-            display: none;
-            border: 2px solid var(--border-color);
-        }
-
-        #canvasOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 8px;
-        }
-
-        .main-container {
+        .results-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 800px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
 
-        .recipe-card {
+        .card {
             background: var(--card-bg);
-            border: 2px solid var(--accent-color);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            display: none;
+            padding: 20px;
         }
 
-        .recipe-title {
-            color: var(--accent-color);
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .recipe-details {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .recipe-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0f172a;
-            padding: 10px 15px;
-            border-radius: 6px;
-        }
-
-        .progress-bar-bg {
-            background: #334155;
-            height: 10px;
-            border-radius: 5px;
-            width: 100%;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .progress-bar-fill {
-            background: var(--accent-color);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .results-section {
-            display: none;
-        }
-
-        .results-section h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .phenotype-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .phenotype-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .rank-badge {
-            background: #334155;
-            color: var(--accent-color);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .similarity-score {
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .chain-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .node {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #0f172a;
-            padding: 8px;
+        canvas {
+            max-width: 100%;
+            height: auto;
             border-radius: 8px;
-            border: 1px solid var(--border-color);
-            width: 95px;
         }
+    </style>
+</head>
+<body>
 
-        .node img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-
+    <header>
+        <h1>Phenotypesworld</h1>
+        <p>Advanced Anthropological Biometric Facial Analyzer</p>
+    </header>
+
+    <div class="upload-section" onclick="document.getElementById('imageInput').click()">
+        <p>Click here or upload a clear facial photograph</p>
+        <span class="upload-btn">Browse Image</span>
+        <input type="file" id="imageInput" accept="image/*">
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <!-- Dynamic analysis results will appear here -->
+    </div>
+
+    <script>
+        // Placeholder logic for initialization and future extension
+        const imageInput = document.getElementById('imageInput');
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = document.getElementById('resultsContainer');
+                    container.innerHTML = `
+                        <div class="card">
+                            <h3>Analysis in progress...</h3>
+                            <p>Loading biometric descriptors and matching against 202 anthropological varieties.</p>
+                            <img src="${e.target.result}" style="max-width:100%; margin-top:15px; border-radius:8px;" alt="Uploaded face"/>
+                        </div>
+                    `;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
+
+        
+
+                    
